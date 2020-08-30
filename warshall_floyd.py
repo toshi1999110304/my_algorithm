@@ -1,5 +1,6 @@
 # d : 隣接行列
 # n : n * n
+# O(n^3)
 def warshall_floyd(n, d):
     for k in range(n):
         for i in range(n):
