@@ -1,6 +1,6 @@
-# e : 連結リスト
+# e : 連結リスト [[(cost, next), ...], [], [], [], ...]
 # s : スタート地点　0 ~ n - 1
-import heapq
+import 
 def dijkstra(s, e):
     n = len(e)
     hq = [(0, s)]
