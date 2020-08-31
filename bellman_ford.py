@@ -1,6 +1,6 @@
 # O(EV)
 # s : スタート地点 0 ~ n - 1
-# g : 隣接リスト
+# g : 隣接リスト [[start, next, cost], ...]
 def bellman_ford(s, g):
     d = [float('inf')]*n # 各頂点への最小コスト
     d[s] = 0 # 自身への距離は0
