@@ -1,3 +1,4 @@
+# O(AloglogA + NlogA)
 # 素因数分解を何度も行うときは、高速verが使える
 def preprocess_fun(A_max):
     # Dテーブルを作る D[12] = 2, D[3] = 3, D[6] = 2
