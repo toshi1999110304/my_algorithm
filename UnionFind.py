@@ -40,7 +40,15 @@ class UnionFind():
         return len(self.roots())
 
     def all_group_members(self):
+        '''
+        #O(n^2)になっている
         return {r: self.members(r) for r in self.roots()}
+        '''
+        # ↓ O(n) ver
+        self.group = {r:[] for r in self.roots()}
+        for i in range(self.n):
+            self.group[self.find(i)].append(i)
+        return self.group
 
     def __str__(self):
         return '\n'.join('{}: {}'.format(r, self.members(r)) for r in self.roots())
