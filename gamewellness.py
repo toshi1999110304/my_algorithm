@@ -1,11 +1,12 @@
 # ノンパラメトリック値の正規化
 # x' = (x - xmedian) / xIQR
 # x : 元データ
-# xmedian : 中央値
-# xIQR : xの四分位範囲
-def nonpara_norm(data):
+# xmedian : all_dataの中央値
+# xIQR : all_dataの四分位範囲
+# all_data : 
+def nonpara_norm(data, all_data):
     import numpy as np
-    sort_data = sorted(data)
+    sort_data = sorted(all_data)
     box = np.percentile(sort_data, q=[0, 25, 50, 75, 100])
     data -= box[2]
     data /= box[3] - box[1]
