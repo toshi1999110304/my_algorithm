@@ -13,9 +13,38 @@ def nonpara_norm(data, all_data):
     return data
 
 
-# RRIBLEによって取得したHRVデータからあるイベント発生時から前range_分間を取り出す
+# RRIBLEによって取得したHRVデータからあるイベント発生時から前後（updownで指定）range_分間を取り出す
 # condition_id : あるイベントのid
 # range_ : 取り出す長さ（分）
+# updown
+#    True : イベント記録時から前にrange_分
+#    False : イベント記録時から後ろにrange_分
+
+def hrv_split(data, condition_id, range_, updown):
+    start = data[data['condition_id'] == condition_id]['time(sec)']
+    first_index = start.index.values[0]
+    if updown:
+        op = -1
+    else:
+        op = 1
+    
+    new_index = first_index + op
+    new = data.iloc[new_index, 1]
+    
+    if updown:
+        while start.values[0] - new < range_ * 60:
+            new = data.iloc[new_index, 1]
+            new_index += op
+    else:
+        while new - start.values[0] < range_ * 60:
+            new = data.iloc[new_index, 1]
+            new_index += op
+        
+    if updown:
+        return data.iloc[new_index:first_index, :]
+    else:
+        return data.iloc[first_index:new_index, :]
+'''    
 def hrv_split(data, condition_id, range_):
     start = data[data['condition_id'] == condition_id]['Current Time']
     s = start.values[0][11:19]
@@ -26,3 +55,6 @@ def hrv_split(data, condition_id, range_):
         new = data.iloc[new_index, 0][11:19]
         new_index -= 1
     return data.iloc[new_index:first, :]
+'''
+
+
