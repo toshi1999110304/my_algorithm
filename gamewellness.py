@@ -57,4 +57,25 @@ def hrv_split(data, condition_id, range_):
     return data.iloc[new_index:first, :]
 '''
 
+# 外れ値除去関数（外れ値の一つ前の値で補間）補間済みリストとインデックスを返す
+# data : pd.series
+def remove_outliers(data):
+    import numpy as np
+    c_array = np.percentile(data, q=[25, 50, 75])
+    iqr = c_array[2] - c_array[0]
+    #median = c_array[1]
+    #print(c_array)
+    max_ = c_array[2] + 1.5 * iqr
+    min_ = c_array[0] - 1.5 * iqr
+    modified = []
+    indexs = []
+    for index, data_i in data.items():
+        indexs.append(index)
+        #val = data.iloc[index-1, :][column]
+        if data_i > max_ or data_i < min_:
+            print('outlier!!')
+            modified.append(data.iloc[index-1])
+        else:
+            modified.append(data_i)
+    return modified, indexs
 
