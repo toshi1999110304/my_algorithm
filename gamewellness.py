@@ -3,7 +3,7 @@
 # x : 元データ
 # xmedian : all_dataの中央値
 # xIQR : all_dataの四分位範囲
-# all_data : 
+# all_data : 中央値や四分位範囲を計算するための全てのデータ
 def nonpara_norm(data, all_data):
     import numpy as np
     sort_data = sorted(all_data)
@@ -19,7 +19,6 @@ def nonpara_norm(data, all_data):
 # updown
 #    True : イベント記録時から前にrange_分
 #    False : イベント記録時から後ろにrange_分
-
 def hrv_split(data, condition_id, range_, updown):
     start = data[data['condition_id'] == condition_id]['time(sec)']
     first_index = start.index.values[0]
@@ -57,9 +56,10 @@ def hrv_split(data, condition_id, range_):
     return data.iloc[new_index:first, :]
 '''
 
+
 # 外れ値除去関数（外れ値の一つ前の値で補間）補間済みリストとインデックスを返す
 # data : pd.series
-def remove_outliers(data):
+def modify_outliers(data):
     import numpy as np
     c_array = np.percentile(data, q=[25, 50, 75])
     iqr = c_array[2] - c_array[0]
@@ -79,3 +79,30 @@ def remove_outliers(data):
             modified.append(data_i)
     return modified, indexs
 
+
+# 外れ値を除いたpd.Seriesを返す
+# 中央値　±　1.5 * 四分位範囲
+def remove_outliers(data):
+    hoge = np.percentile(data, q=[25, 50, 75])
+    iqr = hoge[2] - hoge[0]
+    median = hoge[1]
+    max_ = median + 1.5 * iqr
+    min_ = median - 1.5 * iqr
+    modi = data[min_ <= data]
+    modi = modi[max_ >= data]
+    return modi
+
+
+# HRVデータのエポック切り出し
+# df : HRVのデータフレーム
+# st_condition_id : 切り出し始め位置のcondition_id
+# end_condition_id : 切り出し終わり位置（含まない）のcondition_id
+def epoch_split(df, st_condition_id, end_condition_id):
+    st = df[df['condition_id'] == st_condition_id]
+    st_index = st.index.values[0]
+    end_index = st_index
+    while True:
+        end_index += 1
+        if df.iloc[end_index, :]['condition_id'] == end_condition_id:
+            break
+    return df.iloc[st_index:end_index, :]
